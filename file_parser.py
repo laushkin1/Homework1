@@ -76,25 +76,27 @@ def get_extension(filename: str) -> str:
 
 def scan(folder: Path):
     for item in folder.iterdir():
-        # Робота з папкою
         if item.is_dir():
-            # Перевіряємо, щоб папка не була тією в яку ми вже складаємо файли.
+
             if item.name not in ('archives', 'video', 'audio', 'documents', 'images', 'other', 'files'):
                 FOLDERS.append(item)
-                scan(item)  # скануємо цю вкладену папку - рекурсія
-            continue  # переходимо до наступного елемента в сканованій папці
+                scan(item)
+            continue
 
-        # Робота з файлом
-        ext = get_extension(item.name)  # беремо розширення файлу
-        full_name = folder / item.name  # беремо повний шлях до файлу
+        ext = get_extension(item.name)
+        full_name = folder / item.name
+
         if not ext:
             OTHER_ITEMS.append(full_name)
+
         else:
-            try:
-                container = REGISTER_EXTENSION[ext]
+            container = REGISTER_EXTENSION.get(ext)
+
+            if container is not None:
                 EXTENSIONS.add(ext)
                 container.append(full_name)
-            except KeyError:
+
+            else:
                 UNKNOWN.add(ext)
                 OTHER_ITEMS.append(full_name)
 
