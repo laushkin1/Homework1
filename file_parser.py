@@ -92,7 +92,7 @@ def scan(folder: Path):
         else:
             container = REGISTER_EXTENSION.get(ext)
 
-            if container is not None:
+            if (container := REGISTER_EXTENSION.get(ext)) is not None:
                 EXTENSIONS.add(ext)
                 container.append(full_name)
 
